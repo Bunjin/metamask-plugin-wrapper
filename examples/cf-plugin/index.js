@@ -75,7 +75,6 @@ class CfPlugin  {
 	params: [this.mainAccount, finalMessage],
       },
       function(err, result) {
-	alert("SEND ASYNC RESPONSE: ", err, result)
     	if (err) {
           return console.error(err);
     	}
