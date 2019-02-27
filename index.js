@@ -65,15 +65,18 @@ class PluginWrapper {
   // e4a1/0c25/8c7b/68c3/8df1/cf0c/af03/ce2e/34b5/ec02/e5ab/dd3e/f18f/0703/f317/c62a
   // m/14249/25189/12235/29994/58227/65200/8925/10370/43316/35705
   splitUid(uid) {
+    let numberOfSlices = 16
     let subPath = ""
-    for (let k = 0; k < 10; k++) {
+    for (let k = 0; k < numberOfSlices; k++) {
 
       subPath  += parseInt(uid.slice(4*k+2, 4*(k+1)+2), 16)
-      if (k != 9) {
-	subPath += "/"
+      if (k != numberOfSlices - 1) {
+	subPath += "'/"
+      }
+      if (k == numberOfSlices - 1) {
+	subPath += "'"	
       }
     }
-    console.log(subPath)
     return subPath
   }
 

@@ -165,7 +165,7 @@ class DummyPlugin  {
           return console.error(err);
     	}
 	console.log(result)
-	cb(result)
+	return result
       }
     )
     
