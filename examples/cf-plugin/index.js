@@ -95,7 +95,7 @@ class CfPlugin  {
   
   async appKey_eth_getAddress(params){
     console.log("dummy plugin getPubKey", params)
-    const ans = await this.api.appKey_eth_getAddress(params)
+    const ans = await this.api.appKey_eth_getAddress(params[0])
     console.log(ans)
     this.appAddress = ans.result
   }

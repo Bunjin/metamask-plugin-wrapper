@@ -1,16 +1,18 @@
 //const PluginRegistrar = require('eth-plugin-registrar')
 
+//const Component = require('react').Component
+//const DummyPluginScript = require('./examples/dummy-plugin/index')
+//const CfPluginScript = require('./examples/cf-plugin/index')
 
-const DummyPluginScript = require('./examples/dummy-plugin/index')
-const CfPluginScript = require('./examples/cf-plugin/index')
 
-      
+const SES = require('ses');
+
 class PluginWrapper {
 
   constructor (opts = {}){
-
     console.log("PLUGIN WRAPPER OPTS", opts)
     console.log("constructing plugin wrapper for: ", opts.plugin)
+
     //Currently we only construct a fresh provider as a stream (to pages) but we should factor out the reused parts for passing the API to a module, too: https://github.com/MetaMask/metamask-extension/blob/capabilities-middleware-example/app/scripts/metamask-controller.js#L1483
 // app/scripts/metamask-controller.js:1483
 //     ```engine.push(createProviderMiddleware({ provider }))```
@@ -26,71 +28,95 @@ class PluginWrapper {
     this.personaPath = opts.personaPath
     this.plugin = opts.plugin
 
+
+    // TEMPORARY
+    this.plugin.scriptUrl = "http://localhost:8001/bundle-ses.js"
+
+    
+    
+    // Currently script is loaded here and also in metamask-extension plugin-list.js
+
+
+    // DEPRECATED
+    
     //actually with this api we don't need to pass the provider directly to the plugins
     // or if we do we should restricts so that the plugins can't call directly the api's rpc methods, nor some others
-    // we really want the plugin to have access to read call form the provider, so maybe a subset onlys 
-    this.api = {
-      appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
-      appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
-      appKey_eth_signTransaction: this.appKey_eth_signTransaction.bind(this),
-      appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),
-    }
 
+    // With this api provider sendAsync calls will be from origin metamask
+    // this.api = {
+    //   appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
+    //   appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
+    //   appKey_eth_signTransaction: this.appKey_eth_signTransaction.bind(this),
+    //   appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),
+    // }
 
     // Todo: create a new provider here for the plugin
-    const pluginProvider = this.provider
-    const pluginOptions = {
-	provider: pluginProvider,
-	personaPath: this.personaPath,
-	api: this.api,
-	selectedAccount: this.selectedAccount
-    }
-    if (this.plugin.scriptUrl == "cf") {
-      this.pluginScript = new CfPluginScript(pluginOptions)
-    }
-    else {
-      this.pluginScript = new DummyPluginScript(pluginOptions)
-    }
+    // const pluginProvider = this.provider
+    // const pluginOptions = {
+    // 	provider: pluginProvider,
+    // 	personaPath: this.personaPath,
+    // 	api: this.api,
+    // 	selectedAccount: this.selectedAccount
+    // }
 
+    // this.pluginScript = new CfPluginScript(pluginOptions)
+    this.getPluginScript = this.getPluginScript.bind(this)
+
+    this.startPluginScript()
+
+    console.log("END CONSTRUCTOR")
+
+    
 
     // start plugin script background process
     // however for now this seems to run in window only
-    this.pluginScript.mainProcess()
+    //this.pluginScript.mainProcess()
 
   }
 
+  async startPluginScript() {
 
 
-  // e4a10c258c7b68c38df1cf0caf03ce2e34b5ec02e5abdd3ef18f0703f317c62a
-  // e4a1/0c25/8c7b/68c3/8df1/cf0c/af03/ce2e/34b5/ec02/e5ab/dd3e/f18f/0703/f317/c62a
-  // m/14249/25189/12235/29994/58227/65200/8925/10370/43316/35705
-  splitUid(uid) {
-    let numberOfSlices = 16
-    let subPath = ""
-    for (let k = 0; k < numberOfSlices; k++) {
+    const script = await this.getPluginScript()
+    //AGORIC
+    
+    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow'});
+    // //NOTE: errorStackMode enables confinement breach, do not leave on in production
+    // console.log("SES DEBUG  DEBUG", s.evaluate('1+2')) // returns 3
+    console.log("SES DEBUG  DEBUG", s.evaluate(script, {provider: this.provider})) // returns 3    
+    // s.evaluate('1+a', {a: 3}); // returns 4
+    // function double(a) {
+    //   return a*2;
+    // ]
+    // const doubler = s.evaluate(`(${double})`);
+    // doubler(3);
 
-      subPath  += parseInt(uid.slice(4*k+2, 4*(k+1)+2), 16)
-      if (k != numberOfSlices - 1) {
-	subPath += "'/"
+    // Simple eval
+    //eval(script)
+    
+  }
+
+  
+  async getPluginScript() {
+
+    const scriptUrl = this.plugin.scriptUrl
+    return new Promise(async function(resolve, reject) {
+      var result = null;
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", scriptUrl, false);
+      xmlhttp.send();
+      if (xmlhttp.status==200) {
+	result = xmlhttp.responseText;
       }
-      if (k == numberOfSlices - 1) {
-	subPath += "'"	
-      }
-    }
-    return subPath
+      return resolve(result)
+    })
   }
 
-  computeFullPath(hdSubPath) {
-    const personaPath = this.plugin.personaPath
-    const uidSubPath = this.splitUid(this.plugin.uid)
-    const hdPath = "m/52/" + personaPath + "/" + uidSubPath +"/"  + hdSubPath
-    return hdPath
-  }
   appKey_eth_getPublicKey(params){
     console.log("dummy plugin getPublicKey", params)
     const provider = this.provider
-    const hdPath = this.computeFullPath(params[0])
-    const newParams = [hdPath]
+    const hdPath = params[0]
+    const newParams = hdPath
     const xPub = new Promise(function(resolve, reject) {
       provider.sendAsync(
 	{
@@ -109,8 +135,8 @@ class PluginWrapper {
     console.log("dummy plugin getAddress", params)
     // there is a limit on index values, var HARDENED_OFFSET = 0x80000000
     // for the index derived from the authorAddress we need to find a way to split it
-    const hdPath = this.computeFullPath(params[0])
-    const newParams = [hdPath]
+    const hdPath = params[0]
+    const newParams = hdPath
     console.log(newParams)
     const provider = this.provider
     const appKeyAddress = new Promise(function(resolve, reject){

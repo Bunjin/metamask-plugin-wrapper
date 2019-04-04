@@ -9,6 +9,10 @@
   "author": "Bunjin",
   "license": "ISC",
   "dependencies": {
-    "ethjs-query": "^0.3.8"
+    "ethjs-query": "^0.3.8",
+    "express": "^4.16.4",
+    "internal": "^1.0.8",
+    "react": "^16.8.6",
+    "ses": "^0.4.0"
   }
 }
