@@ -49,19 +49,19 @@ provider.sendAsync(
 
 
 
-// provider.sendAsync(
-//     {
-//       method: "appKey_eth_getPublicKey",
-//       params: "1"
-//     },
-//     function(err, result) {
-//       if (err) {
-// 	return console.error(err);
-//       }
-//       console.log("appKey eth getPubKey")
-//       return console.log(result)
-//     }
-// )
+provider.sendAsync(
+    {
+      method: "appKey_eth_getPublicKey",
+      params: "1"
+    },
+    function(err, result) {
+      if (err) {
+	return console.error(err);
+      }
+      console.log("appKey eth getPubKey")
+      return console.log(result)
+    }
+)
 
 
 
