@@ -1,5 +1,6 @@
 {"actions":[{"name": "appKey_eth_getPublicKey",
     	     "call":"function(){provider.sendAsync({ method: \"appKey_eth_getPublicKey\", params: \"2\", }, function(err, result){ return result})}",
+	     "url":"appKey_eth_getPublicKey.js",
     	     "params":[{"name": "subHdPath",
 			"type": "string"}
 		      ]
@@ -19,5 +20,7 @@
 		       {"name": "value",
     			"type": "uint"}			  
     		      ]
-    	    }]
+    	    }],
+ "background":{"url":"background.js",
+	       "call":""}
 }

@@ -17,34 +17,35 @@
 // Do background script here 
 
 
-console.log("BACKGROUND SCRIPT LOADED")
-// provider.sendAsync(
-//   {
-//     method: "eth_accounts",
-//   },
-//   function(err, result) {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     console.log("ACCOUNTS")
-//     console.log("eth accounts")
-//     return console.log(result)
-//   }
-// )
 
-// provider.sendAsync(
-//   {
-//     method: "eth_blockNumber",
-//   },
-//   function(err, result) {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     console.log("BLOCKNUMBER")    
-//     console.log("eth block number")
-//     return console.log(result)
-//   }
-// )
+console.log("BACKGROUND SCRIPT LOADED")
+provider.sendAsync(
+  {
+    method: "eth_accounts",
+  },
+  function(err, result) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log("ACCOUNTS")
+    console.log("eth accounts")
+    return console.log(result)
+  }
+)
+
+provider.sendAsync(
+  {
+    method: "eth_blockNumber",
+  },
+  function(err, result) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log("BLOCKNUMBER")    
+    console.log("eth block number")
+    return console.log(result)
+  }
+)
 
 
 

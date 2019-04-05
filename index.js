@@ -60,13 +60,7 @@ class PluginWrapper {
     // }
 
     // this.pluginScript = new CfPluginScript(pluginOptions)
-    this.getPluginInterface = this.getPluginInterface.bind(this)
-
-    this.startPluginScript()
-
-    console.log("END CONSTRUCTOR")
-
-    
+    this.getPluginScript = this.getPluginScript.bind(this)
 
     // start plugin script background process
     // however for now this seems to run in window only
@@ -109,9 +103,15 @@ class PluginWrapper {
     // Option 3
     // pass nothing but force this writing
     // define functions in script using references from wrapper
+
     // however like that it may be a security pb
     // also make sure this is not the case in other options (that $ can be used)
     // and should be called from wrapper
+
+    // WARNING:
+    // How is this not a potential attack vector, even when using the other cases??
+    // Plugin dev can call the functions that way ???
+    // no because they need to be defined here locally like below?
 
     // function appKey_eth_getPublicKey(...args){
     //   this.appKey_eth_getPublicKey(args)
@@ -144,10 +144,6 @@ class PluginWrapper {
 
   
   async getPluginScript() {
-    const scriptUrl = this.plugin.scriptUrl + "bundle-ses.js"
-    return this.getPluginFile(scriptUrl)
-  }
-  async getPluginInterface() {
     const url = this.plugin.scriptUrl + "interface.js"
     const scriptInterface = JSON.parse(await this.getPluginFile(url))
 
@@ -155,14 +151,23 @@ class PluginWrapper {
     // try to populate it with the ses functions
     const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'});
 
-    // loop
+    // TODO loop
+
+    
     // option A
     // get function code in JSON itself
-    let scriptFunction = scriptInterface.actions[0].call
+    // let scriptFunction = scriptInterface.actions[0].call
     // option B, fetch it from a specific file (using path from JSON)
-    //    let scriptFunction = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.actions[0].name + ".js")    
+    let scriptFunction = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.actions[0].url)    
     scriptFunction = s.evaluate( "("+ scriptFunction + ")", {provider: this.provider})
     scriptInterface.actions[0].call = scriptFunction
+
+    let scriptBackground = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.background.url)    
+    scriptInterface.background.call = scriptBackground
+
+    // Launch background script (but will run only in tab
+    // should be launched in background.js instead
+    //console.log("SES DEBUG  DEBUG", s.evaluate(scriptBackground, {provider: this.provider}))
     
     return scriptInterface
   }
