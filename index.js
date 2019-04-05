@@ -96,7 +96,7 @@ class PluginWrapper {
 
     
     // Option 2
-    // pass api functions an not provider
+    // pass api functions and not provider
     // origin: MetaMask
 //    console.log("SES DEBUG  DEBUG", s.evaluate("appKey_eth_getPublicKey('2'), appKey_eth_getAddress('0')"// ,
 					       // {appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),

@@ -1,4 +1,4 @@
-function test(){
+function (){
           provider.sendAsync(
 	{
 	  method: "appKey_eth_getPublicKey",
