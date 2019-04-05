@@ -29,8 +29,8 @@ class PluginWrapper {
     this.plugin = opts.plugin
 
 
-    // TEMPORARY
-    this.plugin.scriptUrl = "http://localhost:8001/bundle-ses.js"
+    console.log("PROVIDER")
+    console.log(this.provider)
 
     
     
@@ -60,7 +60,7 @@ class PluginWrapper {
     // }
 
     // this.pluginScript = new CfPluginScript(pluginOptions)
-    this.getPluginScript = this.getPluginScript.bind(this)
+    this.getPluginInterface = this.getPluginInterface.bind(this)
 
     this.startPluginScript()
 
@@ -80,26 +80,94 @@ class PluginWrapper {
     const script = await this.getPluginScript()
     //AGORIC
     
-    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow'});
+    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'});
     // //NOTE: errorStackMode enables confinement breach, do not leave on in production
-    // console.log("SES DEBUG  DEBUG", s.evaluate('1+2')) // returns 3
-    console.log("SES DEBUG  DEBUG", s.evaluate(script, {provider: this.provider})) // returns 3    
-    // s.evaluate('1+a', {a: 3}); // returns 4
-    // function double(a) {
-    //   return a*2;
-    // ]
-    // const doubler = s.evaluate(`(${double})`);
-    // doubler(3);
 
-    // Simple eval
-    //eval(script)
+    
+    // TODO:
+    // provider should be modified here to impose the parameters for the app keys origin HD path
+    // Also, pb when doing 2 sendAsync, because id is undefined? async gets mixed up
+    
+    // Option 1
+    // pass only provider 
+    // origin: MetaMask
+    // console.log("SES DEBUG  DEBUG", s.evaluate(script, {provider: this.provider}))
+
+
+    
+    // Option 2
+    // pass api functions an not provider
+    // origin: MetaMask
+//    console.log("SES DEBUG  DEBUG", s.evaluate("appKey_eth_getPublicKey('2'), appKey_eth_getAddress('0')"// ,
+					       // {appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
+					       // 	appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
+					       // }))
+
+
+
+    
+    // Option 3
+    // pass nothing but force this writing
+    // define functions in script using references from wrapper
+    // however like that it may be a security pb
+    // also make sure this is not the case in other options (that $ can be used)
+    // and should be called from wrapper
+
+    // function appKey_eth_getPublicKey(...args){
+    //   this.appKey_eth_getPublicKey(args)
+    // }
+
+//    const ses_appKey_eth_getPublickKey = s.evaluate(`(${appKey_eth_getPublicKey})`)
+    //ses_appKey_eth_getPublickKey.bind(this)(2)
+    //ses_appKey_eth_getPublickKey.bind(this)(3)    
+
+
+    // Option 4
+    // same as 3 but define functions in script
+    // pass provider
+    
+    // const ses_appKey_eth_getPublickKey = s.evaluate(
+    //   `(function test(){
+    //       provider.sendAsync(
+    // 	{
+    // 	  method: "appKey_eth_getPublicKey",
+    // 	  params: "2",
+    // 	}, function(err, result){
+    // 	  console.log("dummy plugin received answer", err, result)
+    // 	  return result
+    // 	})
+    //   })`, {provider: this.provider})
+    
+    // ses_appKey_eth_getPublickKey()
     
   }
 
   
   async getPluginScript() {
+    const scriptUrl = this.plugin.scriptUrl + "bundle-ses.js"
+    return this.getPluginFile(scriptUrl)
+  }
+  async getPluginInterface() {
+    const url = this.plugin.scriptUrl + "interface.js"
+    const scriptInterface = JSON.parse(await this.getPluginFile(url))
 
-    const scriptUrl = this.plugin.scriptUrl
+
+    // try to populate it with the ses functions
+    const s = SES.makeSESRootRealm({consoleMode: 'allow', errorStackMode: 'allow', mathRandomMode: 'allow'});
+
+    // loop
+    // option A
+    // get function code in JSON itself
+    let scriptFunction = scriptInterface.actions[0].call
+    // option B, fetch it from a specific file (using path from JSON)
+    //    let scriptFunction = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.actions[0].name + ".js")    
+    scriptFunction = s.evaluate( "("+ scriptFunction + ")", {provider: this.provider})
+    scriptInterface.actions[0].call = scriptFunction
+    
+    return scriptInterface
+  }
+
+  async getPluginFile(scriptUrl) {
     return new Promise(async function(resolve, reject) {
       var result = null;
       var xmlhttp = new XMLHttpRequest();

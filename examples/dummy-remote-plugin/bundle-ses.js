@@ -1,9 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // App Keys test
 
-//console.log("HELLO SES WORLD")
-
-// let Web3 = require('web3')
 
 // if (typeof web3 !== 'undefined') {
 //   console.log("already a web3 provider, connecting")
@@ -13,22 +10,59 @@
 //   console.log('No web3? You should consider trying MetaMask!')
 // }
 
-console.log("SENDING")
-provider.sendAsync(
-  {
-    method: "appKey_eth_getPublicKey",
-    params: "1"
-  },
-  function(err, result) {
-    console.log("SENT")    
-    if (err) {
-      return console.error(err);
-    }
-    return console.log(result)
-  }
-)
+// Not working in SES:
 
-testGetPublicKey("2")
+// require
+
+
+
+
+// provider.sendAsync(
+//   {
+//     method: "eth_accounts",
+//   },
+//   function(err, result) {
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("ACCOUNTS")
+//     console.log("eth accounts")
+//     return console.log(result)
+//   }
+// )
+
+// provider.sendAsync(
+//   {
+//     method: "eth_blockNumber",
+//   },
+//   function(err, result) {
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("BLOCKNUMBER")    
+//     console.log("eth block number")
+//     return console.log(result)
+//   }
+// )
+
+
+
+// provider.sendAsync(
+//     {
+//       method: "appKey_eth_getPublicKey",
+//       params: "1"
+//     },
+//     function(err, result) {
+//       if (err) {
+// 	return console.error(err);
+//       }
+//       console.log("appKey eth getPubKey")
+//       return console.log(result)
+//     }
+// )
+
+
+
 
 
 
