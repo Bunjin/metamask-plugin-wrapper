@@ -1,13 +1,16 @@
-{"actions":[{"name": "appKey_eth_getPublicKey",
-    	     "call":"function(){provider.sendAsync({ method: \"appKey_eth_getPublicKey\", params: \"2\", }, function(err, result){ return result})}",
-	     "url":"appKey_eth_getPublicKey.js",
+{"actions":[{"name": "pluginFunction1",
+    	     "call": "",
+	     "url":"pluginFunction1.js",
     	     "params":[{"name": "subHdPath",
 			"type": "string"}
 		      ]
     	    },
-	    {"name": "appKey_eth_getAddress",
-    	     "call":"appKey_eth_getAddress",
+	    {"name": "pluginFunction2",
+    	     "call": "",
+	     "url": "pluginFunction2.js",
     	     "params":[{"name": "subHdPath",
+			"type": "string"},
+		       {"name": "dummyParam",
 			"type": "string"}
     		      ]
     	    },

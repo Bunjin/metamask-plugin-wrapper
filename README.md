@@ -26,3 +26,8 @@ run `npm i` in each folder
 run `npm link` or manage properly forlder structure
 
 `npm run start` in metamask-extension
+
+## Notes
+
+[ ] Check consistency between functions code's params and interface param declaration
+[ ] sha3 of code ?

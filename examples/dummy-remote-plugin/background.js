@@ -19,6 +19,7 @@
 
 
 console.log("BACKGROUND SCRIPT LOADED")
+// No main accounts in background (that's good)
 provider.sendAsync(
   {
     method: "eth_accounts",
@@ -32,6 +33,8 @@ provider.sendAsync(
     return console.log(result)
   }
 )
+
+
 
 provider.sendAsync(
   {
@@ -47,8 +50,6 @@ provider.sendAsync(
   }
 )
 
-
-
 provider.sendAsync(
     {
       method: "appKey_eth_getPublicKey",
@@ -63,106 +64,112 @@ provider.sendAsync(
     }
 )
 
-
-
-
-
-
-function testGetPublicKey(subHdPath){
-  return new Promise(function(resolve, reject){
-    provider.sendAsync(
-      {
-	method: "appKey_eth_getPublicKey",
-	params: subHdPath
-      },
-      function(err, result) {
-	if (err) {
-	  return console.error(err);
-	}
-	return resolve(result)
+provider.sendAsync(
+    {
+      method: "appKey_eth_getAddress",
+      params: "1"
+    },
+    function(err, result) {
+      if (err) {
+	return console.error(err);
       }
-    )
-  })
-}
+      console.log("appKey eth getPubKey")
+      return console.log(result)
+    }
+)
 
-function testGetAddress(subHdPath){
-  return new Promise(function(resolve, reject){
-    provider.sendAsync(
-      {
-	method: "appKey_eth_getAddress",
-	params: subHdPath
-      },
-      function(err, result) {
-	if (err) {
-	  return console.error(err);
-	}
-	return resolve(result)
+const subHdPath = "1"
+provider.sendAsync(
+    {
+      method: "appKey_eth_getAddress",
+      params: subHdPath
+    },
+    function(err, result) {
+      if (err) {
+	return console.error(err);
       }
-    )
-  })
-}
+      let from = result.result
+      let txParams = {
+	"From": from,
+	"to": from,
+	"gas": "0x76c0", // 30400
+	"gasPrice": "0x9184e72a", 
+	"value": 1,
+	"nonce": 0,
+	"data": "0x"
+      }
+      console.log(txParams)
+      provider.sendAsync(
+	{
+	  method: "appKey_eth_signTransaction",
+	  params: [subHdPath, txParams],
+	},
+	function(err2, result2){
+	  if (err2) {
+	    return console.error(err2);
+	  }
+	  console.log("appKey eth signTx")	  
+	  console.log(result2)
+	}
+      )
+      
+    }
+)
 
 
-async function testSignTx(subHdPath, to, value, nonce){
-  let from = (await testGetAddress(subHdPath)).result
-  let txParams = {
-    "From": from,
-    "to": to,
-    "gas": "0x76c0", // 30400
-    "gasPrice": "0x9184e72a", 
-    "value": value,
-    "nonce": nonce,
-    "data": "0x"
+const message = "1e542e2da71b3f5d7b4e9d329b4d30ac0b5d6f266ebef7364bf61c39aac35d00"
+
+provider.sendAsync(
+  {
+    method: "appKey_eth_signMessage",
+    params: [subHdPath, message],
+  },
+  function(err, result){
+    if (err) {
+      return console.error(err);
+    }
+    console.log("appKey eth signMessage")	      
+    console.log(result)
   }
-  return new Promise(function(resolve, reject){
-    provider.sendAsync(
-      {
-	method: "appKey_eth_signTransaction",
-	params: [subHdPath, txParams],
-      },
-      function(err, result){
-	if (err) {
-	  return console.error(err);
-	}
-	return resolve(result)
-      }
-    )
-  })
-}
+)
 
-async function testSignMsg(subHdPath, message){
-  return new Promise(function(resolve, reject){
-    provider.sendAsync(
-      {
-	method: "appKey_eth_signMessage",
-	params: [subHdPath, message],
-      },
-      function(err, result){
-	if (err) {
-	  return console.error(err);
-	}
-	return resolve(result)
-      }
-    )
-  })
-}
 
-async function testSignMsgStark(subHdPath, message){
-  return new Promise(function(resolve, reject){
-    provider.sendAsync(
-      {
-	method: "appKey_stark_signMessage",
-	params: [subHdPath, message],
-      },
-      function(err, result){
-	if (err) {
-	  return console.error(err);
-	}
-	return resolve(result)
-      }
-    )
-  })
-}
+provider.sendAsync(
+  {
+    method: "appKey_stark_signMessage",
+    params: [subHdPath, message],
+  },
+  function(err, result){
+    if (err) {
+      return console.error(err);
+    }
+    console.log("appKey eth signStark")	      
+    console.log(result)
+  }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////
+
 
 async function  testSignTypedMessage(subHdPath, msgString, msgUint){
   let from = (await testGetAddress(subHdPath)).result

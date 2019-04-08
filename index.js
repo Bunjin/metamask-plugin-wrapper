@@ -157,17 +157,23 @@ class PluginWrapper {
     // option A
     // get function code in JSON itself
     // let scriptFunction = scriptInterface.actions[0].call
+    
     // option B, fetch it from a specific file (using path from JSON)
-    let scriptFunction = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.actions[0].url)    
-    scriptFunction = s.evaluate( "("+ scriptFunction + ")", {provider: this.provider})
-    scriptInterface.actions[0].call = scriptFunction
-
-    let scriptBackground = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.background.url)    
-    scriptInterface.background.call = scriptBackground
-
+    if (scriptInterface.actions.length > 0) {
+      for (let k = 0; k < scriptInterface.actions.length; k++){
+	let scriptFunction = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.actions[k].url)
+	scriptFunction = s.evaluate( "("+ scriptFunction + ")", {provider: this.provider})
+	scriptInterface.actions[k].call = scriptFunction
+      }
+    }
     // Launch background script (but will run only in tab
     // should be launched in background.js instead
     //console.log("SES DEBUG  DEBUG", s.evaluate(scriptBackground, {provider: this.provider}))
+
+    // prepare background script that will be launched in plugin-list and metamask controller
+    let scriptBackground = await this.getPluginFile("http://localhost:8001/"+ scriptInterface.background.url)    
+    scriptInterface.background.call = scriptBackground
+
     
     return scriptInterface
   }
@@ -185,94 +191,94 @@ class PluginWrapper {
     })
   }
 
-  appKey_eth_getPublicKey(params){
-    console.log("dummy plugin getPublicKey", params)
-    const provider = this.provider
-    const hdPath = params[0]
-    const newParams = hdPath
-    const xPub = new Promise(function(resolve, reject) {
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_getPublicKey",
-	  params: newParams,
-	}, function(err, result){
-	  console.log("dummy plugin received answer", err, result)
-	  resolve(result)
-	}
-      )
-    })
-    return xPub
-  }
+  // appKey_eth_getPublicKey(params){
+  //   console.log("dummy plugin getPublicKey", params)
+  //   const provider = this.provider
+  //   const hdPath = params[0]
+  //   const newParams = hdPath
+  //   const xPub = new Promise(function(resolve, reject) {
+  //     provider.sendAsync(
+  // 	{
+  // 	  method: "appKey_eth_getPublicKey",
+  // 	  params: newParams,
+  // 	}, function(err, result){
+  // 	  console.log("dummy plugin received answer", err, result)
+  // 	  resolve(result)
+  // 	}
+  //     )
+  //   })
+  //   return xPub
+  // }
   
-  appKey_eth_getAddress(params){
-    console.log("dummy plugin getAddress", params)
-    // there is a limit on index values, var HARDENED_OFFSET = 0x80000000
-    // for the index derived from the authorAddress we need to find a way to split it
-    const hdPath = params[0]
-    const newParams = hdPath
-    console.log(newParams)
-    const provider = this.provider
-    const appKeyAddress = new Promise(function(resolve, reject){
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_getAddress",
-	  params: newParams,
-	}, function(err, result){
-	  console.log("dummy plugin received answer getAppKeyAddress", err, result)
-	  resolve(result)
-	}
-      )
-    })
-    return appKeyAddress
-  }
+  // appKey_eth_getAddress(params){
+  //   console.log("dummy plugin getAddress", params)
+  //   // there is a limit on index values, var HARDENED_OFFSET = 0x80000000
+  //   // for the index derived from the authorAddress we need to find a way to split it
+  //   const hdPath = params[0]
+  //   const newParams = hdPath
+  //   console.log(newParams)
+  //   const provider = this.provider
+  //   const appKeyAddress = new Promise(function(resolve, reject){
+  //     provider.sendAsync(
+  // 	{
+  // 	  method: "appKey_eth_getAddress",
+  // 	  params: newParams,
+  // 	}, function(err, result){
+  // 	  console.log("dummy plugin received answer getAppKeyAddress", err, result)
+  // 	  resolve(result)
+  // 	}
+  //     )
+  //   })
+  //   return appKeyAddress
+  // }
 
-  appKey_eth_signTransaction(params){
-    console.log("dummy plugin signTx Appkey", params)
-    const from = params[0]
-    const to = params[1]
-    const value = params[2]
-    let txParams = {
-      "from": from,
-      "to": to,
-      "gas": "0x76c0", // 30400
-      "gasPrice": "0x9184e72a", 
-      "value": value,
-      "data": "0x"
-    }
-    const provider = this.provider
-    const signedTx = new Promise(function(resolve, reject) {
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_signTransaction",
-	  params: [txParams.from, txParams],
-	}, function(err, result){
-	  console.log("dummy plugin received answer signTxAppKey", err, result)
-	  resolve(result)
-	}
-      )
-    })
-    return signedTx
-  }
+  // appKey_eth_signTransaction(params){
+  //   console.log("dummy plugin signTx Appkey", params)
+  //   const from = params[0]
+  //   const to = params[1]
+  //   const value = params[2]
+  //   let txParams = {
+  //     "from": from,
+  //     "to": to,
+  //     "gas": "0x76c0", // 30400
+  //     "gasPrice": "0x9184e72a", 
+  //     "value": value,
+  //     "data": "0x"
+  //   }
+  //   const provider = this.provider
+  //   const signedTx = new Promise(function(resolve, reject) {
+  //     provider.sendAsync(
+  // 	{
+  // 	  method: "appKey_eth_signTransaction",
+  // 	  params: [txParams.from, txParams],
+  // 	}, function(err, result){
+  // 	  console.log("dummy plugin received answer signTxAppKey", err, result)
+  // 	  resolve(result)
+  // 	}
+  //     )
+  //   })
+  //   return signedTx
+  // }
 
 
-  appKey_eth_signTypedMessage(params){
-    console.log("dummy plugin signTypedMessage Appkey", params)
-    const from = params[0]
-    const message = params[1]
-    const provider = this.provider
-    const signedTypedMessage = new Promise(function(resolve, reject) {
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_signTypedMessage",
-	  params: [from, message],
-	}, function(err, result){
-	  console.log("dummy plugin received answer eth_signTypedMessage", err, result)
-	  resolve(result)
-	}
-      )
-    })
-    return signedTypedMessage
-  }
+  // appKey_eth_signTypedMessage(params){
+  //   console.log("dummy plugin signTypedMessage Appkey", params)
+  //   const from = params[0]
+  //   const message = params[1]
+  //   const provider = this.provider
+  //   const signedTypedMessage = new Promise(function(resolve, reject) {
+  //     provider.sendAsync(
+  // 	{
+  // 	  method: "appKey_eth_signTypedMessage",
+  // 	  params: [from, message],
+  // 	}, function(err, result){
+  // 	  console.log("dummy plugin received answer eth_signTypedMessage", err, result)
+  // 	  resolve(result)
+  // 	}
+  //     )
+  //   })
+  //   return signedTypedMessage
+  // }
   
 }
 
