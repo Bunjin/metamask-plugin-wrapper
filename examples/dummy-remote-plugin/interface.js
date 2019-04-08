@@ -1,5 +1,5 @@
 {"actions":[{"name": "pluginFunction1",
-    	     "call": "",
+    	     "call": "in alternative spec we can write the function js code here",
 	     "url":"pluginFunction1.js",
     	     "params":[{"name": "subHdPath",
 			"type": "string"}
@@ -13,17 +13,10 @@
 		       {"name": "dummyParam",
 			"type": "string"}
     		      ]
-    	    },
-	    {"name": "appKey_eth_sendTransaction",
-    	     "call":"appKey_eth_signTransaction",
-    	     "params":[{"name": "subHdPath",
-    			"type": "string"},
-		       {"name": "to",
-			"type": "string"},
-		       {"name": "value",
-    			"type": "uint"}			  
-    		      ]
-    	    }],
+    	    }
+   	    ],
  "background":{"url":"background.js",
-	       "call":""}
+	       "call":""},
+ "ui":{"url":"iframe.html",
+       "html":""}
 }

@@ -19,137 +19,141 @@
 
 
 console.log("BACKGROUND SCRIPT LOADED")
-// No main accounts in background (that's good)
-provider.sendAsync(
-  {
-    method: "eth_accounts",
-  },
-  function(err, result) {
-    if (err) {
-      return console.error(err);
-    }
-    console.log("ACCOUNTS")
-    console.log("eth accounts")
-    return console.log(result)
-  }
-)
+
+
+// pluginFunctions.name
+pluginApi.pluginFunction1('1')
+
+//pluginApi.pluginFunction2('1', 'test')
+
+// No main accounts in background (that's probably good)
+// provider.sendAsync(
+//   {
+//     method: "eth_accounts",
+//   },
+//   function(err, result) {
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("ACCOUNTS")
+//     console.log("eth accounts")
+//     return console.log(result)
+//   }
+// )
 
 
 
-provider.sendAsync(
-  {
-    method: "eth_blockNumber",
-  },
-  function(err, result) {
-    if (err) {
-      return console.error(err);
-    }
-    console.log("BLOCKNUMBER")    
-    console.log("eth block number")
-    return console.log(result)
-  }
-)
+// provider.sendAsync(
+//   {
+//     method: "eth_blockNumber",
+//   },
+//   function(err, result) {
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("BLOCKNUMBER")    
+//     console.log("eth block number")
+//     return console.log(result)
+//   }
+// )
 
-provider.sendAsync(
-    {
-      method: "appKey_eth_getPublicKey",
-      params: "1"
-    },
-    function(err, result) {
-      if (err) {
-	return console.error(err);
-      }
-      console.log("appKey eth getPubKey")
-      return console.log(result)
-    }
-)
+// provider.sendAsync(
+//     {
+//       method: "appKey_eth_getPublicKey",
+//       params: "1"
+//     },
+//     function(err, result) {
+//       if (err) {
+// 	return console.error(err);
+//       }
+//       console.log("appKey eth getPubKey")
+//       return console.log(result)
+//     }
+// )
 
-provider.sendAsync(
-    {
-      method: "appKey_eth_getAddress",
-      params: "1"
-    },
-    function(err, result) {
-      if (err) {
-	return console.error(err);
-      }
-      console.log("appKey eth getPubKey")
-      return console.log(result)
-    }
-)
+// provider.sendAsync(
+//     {
+//       method: "appKey_eth_getAddress",
+//       params: "1"
+//     },
+//     function(err, result) {
+//       if (err) {
+// 	return console.error(err);
+//       }
+//       console.log("appKey eth getPubKey")
+//       return console.log(result)
+//     }
+// )
 
-const subHdPath = "1"
-provider.sendAsync(
-    {
-      method: "appKey_eth_getAddress",
-      params: subHdPath
-    },
-    function(err, result) {
-      if (err) {
-	return console.error(err);
-      }
-      let from = result.result
-      let txParams = {
-	"From": from,
-	"to": from,
-	"gas": "0x76c0", // 30400
-	"gasPrice": "0x9184e72a", 
-	"value": 1,
-	"nonce": 0,
-	"data": "0x"
-      }
-      console.log(txParams)
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_signTransaction",
-	  params: [subHdPath, txParams],
-	},
-	function(err2, result2){
-	  if (err2) {
-	    return console.error(err2);
-	  }
-	  console.log("appKey eth signTx")	  
-	  console.log(result2)
-	}
-      )
+// const subHdPath = "1"
+// provider.sendAsync(
+//     {
+//       method: "appKey_eth_getAddress",
+//       params: subHdPath
+//     },
+//     function(err, result) {
+//       if (err) {
+// 	return console.error(err);
+//       }
+//       let from = result.result
+//       let txParams = {
+// 	"From": from,
+// 	"to": from,
+// 	"gas": "0x76c0", // 30400
+// 	"gasPrice": "0x9184e72a", 
+// 	"value": 1,
+// 	"nonce": 0,
+// 	"data": "0x"
+//       }
+//       console.log(txParams)
+//       provider.sendAsync(
+// 	{
+// 	  method: "appKey_eth_signTransaction",
+// 	  params: [subHdPath, txParams],
+// 	},
+// 	function(err2, result2){
+// 	  if (err2) {
+// 	    return console.error(err2);
+// 	  }
+// 	  console.log("appKey eth signTx")	  
+// 	  console.log(result2)
+// 	}
+//       )
       
-    }
-)
+//     }
+// )
 
 
-const message = "1e542e2da71b3f5d7b4e9d329b4d30ac0b5d6f266ebef7364bf61c39aac35d00"
+// const message = "1e542e2da71b3f5d7b4e9d329b4d30ac0b5d6f266ebef7364bf61c39aac35d00"
 
-provider.sendAsync(
-  {
-    method: "appKey_eth_signMessage",
-    params: [subHdPath, message],
-  },
-  function(err, result){
-    if (err) {
-      return console.error(err);
-    }
-    console.log("appKey eth signMessage")	      
-    console.log(result)
-  }
-)
-
-
-provider.sendAsync(
-  {
-    method: "appKey_stark_signMessage",
-    params: [subHdPath, message],
-  },
-  function(err, result){
-    if (err) {
-      return console.error(err);
-    }
-    console.log("appKey eth signStark")	      
-    console.log(result)
-  }
-)
+// provider.sendAsync(
+//   {
+//     method: "appKey_eth_signMessage",
+//     params: [subHdPath, message],
+//   },
+//   function(err, result){
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("appKey eth signMessage")	      
+//     console.log(result)
+//   }
+// )
 
 
-
+// provider.sendAsync(
+//   {
+//     method: "appKey_stark_signMessage",
+//     params: [subHdPath, message],
+//   },
+//   function(err, result){
+//     if (err) {
+//       return console.error(err);
+//     }
+//     console.log("appKey eth signStark")	      
+//     console.log(result)
+//   }
+// )
 
 
 
@@ -168,57 +172,60 @@ provider.sendAsync(
 
 
 
-/////////////
 
 
-async function  testSignTypedMessage(subHdPath, msgString, msgUint){
-  let from = (await testGetAddress(subHdPath)).result
-  const finalMessage = prepareTypedMessage(from, msgString, msgUint)
-  return new Promise(function(resolve, reject){
-      provider.sendAsync(
-	{
-	  method: "appKey_eth_signTypedMessage",
-	  params: [subHdPath, finalMessage],
-	}, function(err, result){
-	  return resolve(result)
-	}
-      )
-    })
-  }
+
+///////////// OLD //////////////////:
 
 
-function prepareTypedMessage(fromAccount, msgString, msgUint){
-  // // EIP 712 data
-  const domain = [
-    { name: "name", type: "string" },
-    { name: "version", type: "string" },
-    { name: "chainId", type: "uint256" },
-    { name: "salt", type: "bytes32" }
-  ]
-  const dummyStruct = [
-    {name: "msgString", type: "string"},
-    {name: "msgUint", type: "uint"}
-  ]
+// async function  testSignTypedMessage(subHdPath, msgString, msgUint){
+//   let from = (await testGetAddress(subHdPath)).result
+//   const finalMessage = prepareTypedMessage(from, msgString, msgUint)
+//   return new Promise(function(resolve, reject){
+//       provider.sendAsync(
+// 	{
+// 	  method: "appKey_eth_signTypedMessage",
+// 	  params: [subHdPath, finalMessage],
+// 	}, function(err, result){
+// 	  return resolve(result)
+// 	}
+//       )
+//     })
+//   }
 
-  const domainData = {
-    name: "MetaMask Dummy Plugin",
-    version: "1",
-    chainId: "1",
-    salt: "0x12345611111111111"
-  }
 
-  let finalMessage = JSON.stringify({
-    types: {
-      EIP712Domain: domain,
-      Struct: dummyStruct,
-    },
-    domain: domainData,
-    primaryType: "Struct",
-    message: { "msgString": msgString,
-	       "msgUint": msgUint}
-  })
-  return finalMessage
-}
+// function prepareTypedMessage(fromAccount, msgString, msgUint){
+//   // // EIP 712 data
+//   const domain = [
+//     { name: "name", type: "string" },
+//     { name: "version", type: "string" },
+//     { name: "chainId", type: "uint256" },
+//     { name: "salt", type: "bytes32" }
+//   ]
+//   const dummyStruct = [
+//     {name: "msgString", type: "string"},
+//     {name: "msgUint", type: "uint"}
+//   ]
+
+//   const domainData = {
+//     name: "MetaMask Dummy Plugin",
+//     version: "1",
+//     chainId: "1",
+//     salt: "0x12345611111111111"
+//   }
+
+//   let finalMessage = JSON.stringify({
+//     types: {
+//       EIP712Domain: domain,
+//       Struct: dummyStruct,
+//     },
+//     domain: domainData,
+//     primaryType: "Struct",
+//     message: { "msgString": msgString,
+// 	       "msgUint": msgUint}
+//   })
+//   return finalMessage
+// }
 
 
 
