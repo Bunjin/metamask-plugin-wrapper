@@ -17,6 +17,6 @@
    	    ],
  "background":{"url":"background.js",
 	       "call":""},
- "ui":{"url":"iframe.html",
-       "html":""}
+ "ui":{"url":"iframe.js",
+       "call":""}
 }
