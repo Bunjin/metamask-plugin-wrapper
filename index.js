@@ -152,7 +152,6 @@ class PluginWrapper {
     // prepare ui script
     let scriptUi = await this.getPluginFile("http://localhost:8001/"+ pluginScript.ui.url)    
     pluginScript.ui.call = scriptUi
-
     
     return pluginScript
   }

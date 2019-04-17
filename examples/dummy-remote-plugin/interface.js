@@ -1,5 +1,5 @@
 {"actions":[{"name": "pluginFunction1",
-    	     "call": "in alternative spec we can write the function js code here",
+    	     "call": "",
 	     "url":"pluginFunction1.js",
     	     "params":[{"name": "subHdPath",
 			"type": "string"}

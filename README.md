@@ -27,11 +27,17 @@ run `npm link` or manage properly forlder structure
 
 `npm run start` in metamask-extension
 
-## Notes
+## Todo
 
 [ ] Check consistency between functions code's params and interface param declaration
 
 [ ] sha3 of code ?
+
+[ ] background script should start even when ui is not opened on browser start
+
+[ ] background script should start / run even when not unlocked
+
+[ ] appKeys: getPublicKey is curve dependant
 
 
 ## Notes on SES

@@ -22,9 +22,10 @@ console.log("BACKGROUND SCRIPT LOADED")
 
 
 // pluginFunctions.name
-pluginApi.pluginFunction1('1')
+// pluginApi.pluginFunction1('1')
 
-//pluginApi.pluginFunction2('1', 'test')
+// pluginApi.pluginFunction2('2/3', 'test')
+
 
 // No main accounts in background (that's probably good)
 // provider.sendAsync(
@@ -71,19 +72,19 @@ pluginApi.pluginFunction1('1')
 //     }
 // )
 
-// provider.sendAsync(
-//     {
-//       method: "appKey_eth_getAddress",
-//       params: "1"
-//     },
-//     function(err, result) {
-//       if (err) {
-// 	return console.error(err);
-//       }
-//       console.log("appKey eth getPubKey")
-//       return console.log(result)
-//     }
-// )
+provider.sendAsync(
+    {
+      method: "appKey_eth_getAddress",
+      params: "1"
+    },
+    function(err, result) {
+      if (err) {
+	return console.error(err);
+      }
+      console.log("appKey eth getPubKey")
+      return console.log(result)
+    }
+)
 
 // const subHdPath = "1"
 // provider.sendAsync(
